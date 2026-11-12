@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rigcard</title>
+<meta name="description" content="A PC build on one clean card: parts, photo, live stats and benchmarks. Made with Rigcard.">
+<meta property="og:title" content="Rigcard: a PC build card">
+<meta property="og:description" content="Parts, photo, live stats and benchmarks on one clean card.">
+<meta property="og:image" content="https://larosa023.github.io/Rigcard/icon.png">
+<meta name="theme-color" content="#0b0d14">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app" aria-live="polite">
+  <div class="loading" id="loading">Loading build…</div>
+</main>
+<template id="card-tpl">
+  <article class="card" id="card">
+    <header class="head">
+      <div class="photo" id="photo" role="img"></div>
+      <div class="title">
+        <h1 id="name"></h1>
+        <p class="sub" id="sub"></p>
+        <div class="chips" id="chips"></div>
+      </div>
+    </header>
+    <section class="body" id="body">
+      <div class="panel parts" id="parts"><h2>Parts</h2><dl id="partlist"></dl></div>
+      <div class="panel live" id="live"><h2>Live <span class="badge" id="livebadge"></span></h2><div class="tiles" id="tiles"></div><p class="seen" id="seen"></p></div>
+      <div class="panel bench" id="bench"><h2>Benchmarks</h2><ol id="benchlist"></ol></div>
+    </section>
+    <footer class="foot"><span class="brand">rigcard<i></i></span><span id="gen"></span></footer>
+  </article>
+  <nav class="actions">
+    <button id="copy" type="button">Copy link</button>
+    <a id="make" href="https://github.com/larosa023/Rigcard/releases/latest">Make your own card</a>
+  </nav>
+</template>
+<template id="home-tpl">
+  <section class="home">
+    <img src="icon.png" alt="" width="96" height="96">
+    <h1>Rigcard</h1>
+    <p>Your PC build on one clean card: parts detected automatically, a photo, live temperatures and benchmarks. Share it as a link or an image.</p>
+    <a class="cta" href="https://github.com/larosa023/Rigcard/releases/latest">Download for Windows</a>
+    <p class="small">This page shows cards shared from the Rigcard app. Links look like <code>larosa023.github.io/Rigcard/#g=…</code></p>
+  </section>
+</template>
+<script src="app.js"></script>
+</body>
+</html>
