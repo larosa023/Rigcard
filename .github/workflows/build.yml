@@ -24,7 +24,7 @@ jobs:
         run: |
           pip install ziglang==0.13.0
           sudo apt-get update -q
-          sudo apt-get install -y -q nsis wine64 xvfb
+          sudo apt-get install -y -q nsis wine64 xvfb libgl1-mesa-dri libgl1 libegl1 mesa-utils
 
       - name: Build Rigcard.exe
         run: ./build.sh
@@ -34,11 +34,13 @@ jobs:
           WINEDEBUG: -all
         run: |
           export WINEPREFIX=$RUNNER_TEMP/wine
-          wine64 dist/Rigcard.exe --version || wine dist/Rigcard.exe --version
+          wineboot -i >/dev/null 2>&1 || true
+          wine dist/Rigcard.exe --version
           mkdir -p samples
           for size in "wide 1920 1080" "square 1080 1080" "phone 1170 2532"; do
             set -- $size
-            xvfb-run -a wine dist/Rigcard.exe --render-test "Z:$PWD/samples/$1.png" $2 $3 "Z:$PWD/tools/sample-build.json"
+            xvfb-run -a -s "-screen 0 1280x800x24" wine dist/Rigcard.exe --render-test "Z:$PWD/samples/$1.png" $2 $3 "Z:$PWD/tools/sample-build.json" || {
+              echo "render failed"; cat "$WINEPREFIX/drive_c/users/$USER/AppData/Local/Rigcard/rigcard.log" || true; exit 1; }
             test -s samples/$1.png
           done
           xvfb-run -a wine dist/Rigcard.exe --bench-test cpu-single mem-lat
