@@ -1,0 +1,99 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Zig, NSIS, Wine
+        run: |
+          pip install ziglang==0.13.0
+          sudo apt-get update -q
+          sudo apt-get install -y -q nsis wine64 xvfb
+
+      - name: Build Rigcard.exe
+        run: ./build.sh
+
+      - name: Smoke test under Wine (starts, draws cards, runs a benchmark)
+        env:
+          WINEDEBUG: -all
+        run: |
+          export WINEPREFIX=$RUNNER_TEMP/wine
+          wine64 dist/Rigcard.exe --version || wine dist/Rigcard.exe --version
+          mkdir -p samples
+          for size in "wide 1920 1080" "square 1080 1080" "phone 1170 2532"; do
+            set -- $size
+            xvfb-run -a wine dist/Rigcard.exe --render-test "Z:$PWD/samples/$1.png" $2 $3 "Z:$PWD/tools/sample-build.json"
+            test -s samples/$1.png
+          done
+          xvfb-run -a wine dist/Rigcard.exe --bench-test cpu-single mem-lat
+          ls -la samples
+
+      - name: Installer and portable zip
+        run: |
+          makensis -V2 installer/rigcard.nsi
+          mkdir -p portable && cp dist/Rigcard.exe portable/ && touch portable/portable
+          printf 'Rigcard portable\r\n\r\nRun Rigcard.exe. Because of the "portable" file next to it, your data stays in the "data" folder here.\r\n' > portable/README.txt
+          (cd portable && zip -q ../dist/Rigcard-portable.zip Rigcard.exe portable README.txt)
+          cd dist
+          sha256sum Rigcard.exe Rigcard-Setup.exe Rigcard-portable.zip > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Rigcard-win-x64
+          path: |
+            dist/Rigcard.exe
+            dist/Rigcard-Setup.exe
+            dist/Rigcard-portable.zip
+            dist/SHA256SUMS.txt
+            samples/*.png
+
+      # A release is published automatically when RIGCARD_VERSION in src/common.h changes on main
+      # (or when a v* tag is pushed). Versions with a "-" such as 1.1.0-beta.1 are pre-releases (Beta).
+      - name: Decide release
+        id: rel
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER=$(grep -oP 'RIGCARD_VERSION L"\K[^"]+' src/common.h)
+          TAG="v$VER"
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then TAG="${GITHUB_REF#refs/tags/}"; fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          if [[ "$TAG" == *-* ]]; then echo "pre=true" >> "$GITHUB_OUTPUT"; else echo "pre=false" >> "$GITHUB_OUTPUT"; fi
+          if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"; echo "Release $TAG already exists"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"; echo "Will publish $TAG"
+          fi
+
+      - name: Release
+        if: steps.rel.outputs.publish == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.rel.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: Rigcard ${{ steps.rel.outputs.tag }}
+          prerelease: ${{ steps.rel.outputs.pre }}
+          body_path: CHANGELOG-latest.md
+          files: |
+            dist/Rigcard-Setup.exe
+            dist/Rigcard.exe
+            dist/Rigcard-portable.zip
+            dist/SHA256SUMS.txt

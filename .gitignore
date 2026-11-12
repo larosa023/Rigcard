@@ -1,0 +1,7 @@
+dist/
+build/
+portable/
+samples/
+*.pdb
+*.lib
+.vs/

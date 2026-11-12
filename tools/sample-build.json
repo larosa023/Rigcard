@@ -1,0 +1,95 @@
+{
+ "schema": 1,
+ "name": "Midnight Rig",
+ "location": "Holmdel, NJ",
+ "parts": [
+  {
+   "key": "cpu",
+   "kind": "cpu",
+   "name": "AMD Ryzen 9 7900X",
+   "detail": "12 cores \u00b7 24 threads \u00b7 4.7 GHz base",
+   "detected": "AMD Ryzen 9 7900X",
+   "detectedDetail": "12 cores \u00b7 24 threads \u00b7 4.7 GHz base"
+  },
+  {
+   "key": "gpu:0",
+   "kind": "gpu",
+   "name": "NVIDIA GeForce RTX 4090",
+   "detail": "24 GB \u00b7 driver 566.36",
+   "detected": "NVIDIA GeForce RTX 4090",
+   "detectedDetail": "24 GB \u00b7 driver 566.36"
+  },
+  {
+   "key": "motherboard",
+   "kind": "motherboard",
+   "name": "ASUS TUF GAMING B650E-PLUS WIFI",
+   "detail": "BIOS 3024 (2024-08-14)",
+   "detected": "ASUS TUF GAMING B650E-PLUS WIFI",
+   "detectedDetail": "BIOS 3024 (2024-08-14)"
+  },
+  {
+   "key": "ram",
+   "kind": "ram",
+   "name": "64 GB DDR5-6000",
+   "detail": "2 \u00d7 32 GB \u00b7 G.Skill F5-6000J3036F32G",
+   "detected": "64 GB DDR5-6000",
+   "detectedDetail": "2 \u00d7 32 GB \u00b7 G.Skill F5-6000J3036F32G"
+  },
+  {
+   "key": "storage:0",
+   "kind": "storage",
+   "name": "Samsung SSD 990 PRO 1TB",
+   "detail": "1 TB NVMe SSD",
+   "detected": "Samsung SSD 990 PRO 1TB",
+   "detectedDetail": "1 TB NVMe SSD"
+  },
+  {
+   "key": "storage:1",
+   "kind": "storage",
+   "name": "WD_BLACK SN850X 1TB",
+   "detail": "1 TB NVMe SSD",
+   "detected": "WD_BLACK SN850X 1TB",
+   "detectedDetail": "1 TB NVMe SSD"
+  },
+  {
+   "key": "manual:0",
+   "kind": "cooler",
+   "name": "Arctic Liquid Freezer III 360",
+   "manual": true,
+   "detected": "Arctic Liquid Freezer III 360",
+   "detectedDetail": ""
+  },
+  {
+   "key": "manual:1",
+   "kind": "psu",
+   "name": "Corsair RM1000x (2024)",
+   "manual": true,
+   "detected": "Corsair RM1000x (2024)",
+   "detectedDetail": ""
+  },
+  {
+   "key": "manual:2",
+   "kind": "case",
+   "name": "Lian Li O11 Dynamic EVO",
+   "manual": true,
+   "detected": "Lian Li O11 Dynamic EVO",
+   "detectedDetail": ""
+  },
+  {
+   "key": "os",
+   "kind": "os",
+   "name": "Windows 11 Home",
+   "detail": "24H2 \u00b7 build 26100.2314",
+   "detected": "Windows 11 Home",
+   "detectedDetail": "24H2 \u00b7 build 26100.2314"
+  }
+ ],
+ "sections": {
+  "parts": true,
+  "live": true,
+  "bench": true,
+  "photo": true,
+  "peripherals": false
+ },
+ "scanned": true
+}
